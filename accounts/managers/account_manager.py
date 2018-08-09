@@ -1,7 +1,8 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model 
 
 from accounts.models import UserProfile
 
+User = get_user_model()
 
 def create_user(*args, **kwargs):
     new_user = User.objects.create_user(*args, **kwargs)

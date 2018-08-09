@@ -158,3 +158,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+AUTH_USER_MODEL = "accounts.User"
+
+AUTHENTICATION_BACKENDS = (
+    'accounts.backends.DualModelBackend', # our custom authentication backend
+    'django.contrib.auth.backends.ModelBackend' # fallback to default authentication backend if first fails 
+)

@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model 
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.compat import authenticate
 from rest_framework.validators import UniqueValidator
 from accounts.models import UserProfile
 
+User = get_user_model()
 
 class UserDetailSerializer(serializers.ModelSerializer):
     avatar = serializers.URLField(source='profile.avatar')
@@ -50,14 +51,12 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         max_length=32,
         label=_("New Password"),
     )
+    '''
     email = serializers.EmailField(
         allow_blank=True,
         default='',
-        validators=[UniqueValidator(
-            queryset=User.objects.all(),
-            message='has already been taken by other user'
-        )]
     )
+    '''
 
     class Meta:
         model = User
@@ -138,6 +137,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         ),
         required=True
     )
+    '''
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(
@@ -145,6 +145,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             message='has already been taken by other user'
         )]
     )
+    '''
     avatar = serializers.URLField(source='profile.avatar', allow_blank=True, default='')
 
     class Meta:
@@ -210,6 +211,7 @@ class UserTokenSerializer(serializers.Serializer):
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
+    '''
     username = serializers.SlugField(
         max_length=32,
         help_text=_(
@@ -217,14 +219,15 @@ class UserLoginSerializer(serializers.ModelSerializer):
         ),
         required=True
     )
+    '''
     token = serializers.CharField(allow_blank=True, read_only=True)
-    name = serializers.CharField(source='profile.name', read_only=True)
+    #name = serializers.CharField(source='profile.name', read_only=True)
 
     class Meta:
         model = User
         fields = [
             'username',
-            'name',
+            #'name',
             'password',
             'token',
         ]

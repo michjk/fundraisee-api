@@ -2,10 +2,11 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from django.apps import apps
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from accounts.managers import account_manager
 from accounts.apps import AccountsConfig
 
+User = get_user_model()
 
 class AccountsTestCase(APITestCase):
     def setUp(self):
@@ -139,7 +140,16 @@ class AccountsTestCase(APITestCase):
     def test_login_user(self):
         data = {
             'username': 'test',
-            'email': 'test@endilie.com',
+            #'email': 'test@endilie.com',
+            'password': 'anythingcanlah'
+        }
+        response = self.client.post(self.login_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_login_user_with_email(self):
+        data = {
+            #'username': 'test',
+            'username': 'test@endilie.com',
             'password': 'anythingcanlah'
         }
         response = self.client.post(self.login_url, data)
@@ -148,12 +158,21 @@ class AccountsTestCase(APITestCase):
     def test_login_with_wrong_password(self):
         data = {
             'username': 'test',
-            'email': 'test@endilie.com',
+            #'email': 'test@endilie.com',
             'password': 'testtesttest'
         }
         response = self.client.post(self.login_url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_login_with_email_and_wrong_password(self):
+        data = {
+            #'username': 'test',
+            'email': 'test@endilie.com',
+            'password': 'testtesttest'
+        }
+        response = self.client.post(self.login_url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    
     def test_loggedin_user_can_logout(self):
         self.client.force_login(user=self.test_user)
         response = self.client.post(self.logout_url)
